@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet' href='/stylesheets/style.css')
+  body
+    h1 welcome to #{title}
+    p Welcome to #{title}
+    p(id="det")
+    form(action="/" method="post")
+      //- I do not understand how the "Thing" "Works".
+        input(type="hidden" id="queryHash" name="queryHash" value=queryHash)
+        input(type="hidden", id="queryQuestions", name="queryQuestions", value=queryQuestions)
+        #{formFormat}
+      //- label(for="fname") Get
+      //- br
+      //- input(type="radio" name="answer" value="git")
+      //- label(name="0") Git
+      //- br
+      //- input(type="radio" name="answer" value="got") 
+      //- label(name="1") Got
+      //- br
+      //- input(type)
+      //- input(type="submit" value="Submit")
+
+  script(type="text/javascript").
+    elem = document.getElementById("det");
+    elem.innerHTML = elem.innerHTML + " get goggled";
+
