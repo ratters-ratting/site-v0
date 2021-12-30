@@ -6,24 +6,32 @@ html
   body
     h1 welcome to #{title}
     p Welcome to #{title}
-    p(id="det")
-    form(action="/" method="post")
-      //- I do not understand how the "Thing" "Works".
-        input(type="hidden" id="queryHash" name="queryHash" value=queryHash)
-        input(type="hidden", id="queryQuestions", name="queryQuestions", value=queryQuestions)
-        #{formFormat}
-      //- label(for="fname") Get
-      //- br
-      //- input(type="radio" name="answer" value="git")
-      //- label(name="0") Git
-      //- br
-      //- input(type="radio" name="answer" value="got") 
-      //- label(name="1") Got
-      //- br
-      //- input(type)
-      //- input(type="submit" value="Submit")
+    p(id="question")
+    form(action="/" method="post" id="Form")
+      input(type="hidden" name="null")
 
   script(type="text/javascript").
-    elem = document.getElementById("det");
-    elem.innerHTML = elem.innerHTML + " get goggled";
-
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+      resp = JSON.parse(this.responseText);
+      console.log(resp)
+      document.getElementById("question").innerHTML = resp.q;
+      const form = document.getElementById("Form");
+      for (let a of resp.a) {
+        let answer = document.createElement("input");
+        answer.type = "radio";
+        answer.id = a;
+        answer.name = "answer";
+        let label = document.createElement("label");
+        label.for = a;
+        label.innerHTML = a;
+        form.appendChild(answer);
+        form.appendChild(label);
+        form.appendChild(document.createElement("br"));
+      }
+      let submit_button = document.createElement("input", {type: "submit"});
+      submit_button.type = "submit";
+      form.appendChild(submit_button)
+    }
+    xhttp.open("GET", "retrieveQuestion");
+    xhttp.send();
