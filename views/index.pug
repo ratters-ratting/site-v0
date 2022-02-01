@@ -5,23 +5,26 @@ html
     link(rel='stylesheet' href='/stylesheets/style.css')
   body
     h1 welcome to #{title}
-    p Welcome to #{title}
+    p(id="displayStatus")
     p(id="question")
     form(action="/" method="post" id="Form")
-      input(type="hidden" name="null")
+      input(type="hidden" name="previousResult" id="previousResult" value=resultStatus)
+      input(type="hidden" name="question" id="question" value="hi")
 
   script(type="text/javascript").
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
       resp = JSON.parse(this.responseText);
-      console.log(resp)
-      document.getElementById("question").innerHTML = resp.q;
+      console.log(resp);
       const form = document.getElementById("Form");
+      document.getElementById("question").innerHTML = "<b>" + resp.q + "</b>";
+      form[1].value = resp.q;
       for (let a of resp.a) {
         let answer = document.createElement("input");
         answer.type = "radio";
-        answer.id = a;
+        answer.id = "answer";
         answer.name = "answer";
+        answer.value = a;
         let label = document.createElement("label");
         label.for = a;
         label.innerHTML = a;
@@ -31,7 +34,25 @@ html
       }
       let submit_button = document.createElement("input", {type: "submit"});
       submit_button.type = "submit";
-      form.appendChild(submit_button)
+      form.appendChild(submit_button);
+      console.log(form);
     }
     xhttp.open("GET", "retrieveQuestion");
     xhttp.send();
+
+  script(type="text/javascript").
+    function showResult(value, elem) {
+      console.log(value);
+      if (!value) return;
+      switch (value) {
+        case "failed":
+          elem.innerHTML = `<h1 style="color:Tomato"> you are a Massive Failure ! youre parents Not care !</h1>`;
+          break;
+        case "success":
+          elem.innerHTML = `<h1 style="color:Green"> you Win !</h1>`;
+          break;
+        default:
+          elem.innerHTML = "THE WEBSITE BROKE, AND YOU ARE BEHIND IT"
+      }
+    }
+    showResult(document.getElementById("previousResult").value, document.getElementById("displayStatus"));

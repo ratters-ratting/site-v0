@@ -1,40 +1,47 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const randElem = arr => arr[Math.floor(Math.random() * arr.length)];
-
-const shuffle = arr1 => arr1.sort(() => (Math.random() > 0.5) ? 1 : -1);
-const rawQuestions = [{
+const shuffle = (arr1) => arr1.sort(() => (Math.random() > 0.5 ? 1 : -1));
+const rawQuestions = [
+    {
         q: "Respond true",
-        a: ["true", "false"]
+        a: ["true", "false"],
     },
     {
         q: "Respond false",
-        a: ["false", "true"]
+        a: ["false", "true"],
     },
 ];
 
-const qObj = {};
-const qNames = [];
+const questionObj = {};
+const questions = [];
 for (const question of rawQuestions) {
-    qObj[question.q] = {
+    questionObj[question.q] = {
         correct: question.a[0],
-        all: question.a
+        all: question.a,
     };
-    qNames.push(question.q);
+    questions.push(question.q);
 }
 
-function generate_question() {
-    elem = randElem(qNames);
+function generateQuestion() {
+    question = questions[Math.floor(Math.random() * questions.length)];
     return {
-        q: elem,
-        a: shuffle(qObj[elem].all)
+        q: question,
+        a: shuffle(questionObj[question].all),
     };
 }
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-    res.send(generate_question());
+function validateQuestionAnswer(question, answer) {
+    return questionObj[question]?.correct == answer;
+}
+
+router.get("/", function (req, res, next) {
+    res.send(generateQuestion());
+});
+
+router.post("/", function (req, res, next) {
+    console.log(req.body);
+    res.send(validateQuestionAnswer(req.body.question, req.body.answer));
 });
 
 module.exports = router;
