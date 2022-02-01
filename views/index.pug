@@ -7,9 +7,11 @@ html
     h1 welcome to #{title}
     p(id="displayStatus")
     p(id="question")
-    form(action="/" method="post" id="Form")
+    form(action="/retrieveQuestion" method="post" id="Form")
       input(type="hidden" name="previousResult" id="previousResult" value=resultStatus)
       input(type="hidden" name="question" id="question" value="hi")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer")
+
 
   script(type="text/javascript").
     const xhttp = new XMLHttpRequest();
@@ -56,3 +58,12 @@ html
       }
     }
     showResult(document.getElementById("previousResult").value, document.getElementById("displayStatus"));
+
+    
+  script.
+    $("#Form").submit(function(event) {
+      event.preventDefault();
+      $.post("/retrieveQuestion", { question: $("#question").text(), answer: $("#answer").val() }).then(data => {
+        showResult(!data ? 'success' : 'failed', document.getElementById("displayStatus"))
+      })
+    })
